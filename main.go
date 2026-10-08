@@ -23,7 +23,7 @@ const usage = `Usage:
   idea -r <spec>        Remove ideas by number (e.g. 1, 1-3, 1,5,6, 1-3,5,7-9)
   idea -h               Show this help
 
-Ideas are stored in ~/.ideas.md (override with $IDEAS_FILE).
+Ideas are stored in ~/Documents/Ideas/ideas.md (override with $IDEAS_FILE).
 `
 
 var itemRe = regexp.MustCompile(`^(\d+)\.\s?(.*)$`)
@@ -71,7 +71,8 @@ func run(args []string) error {
 	return add(path, strings.Join(args, " "))
 }
 
-// ideasPath returns $IDEAS_FILE if set, otherwise ~/.ideas.md.
+// ideasPath returns $IDEAS_FILE if set, otherwise ~/Documents/Ideas/ideas.md.
+// If the old location (~/.ideas.md) exists, it is moved to the new default.
 func ideasPath() (string, error) {
 	if p := os.Getenv("IDEAS_FILE"); p != "" {
 		return p, nil
@@ -80,7 +81,31 @@ func ideasPath() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("locating home directory: %w", err)
 	}
-	return filepath.Join(home, ".ideas.md"), nil
+	newDir := filepath.Join(home, "Documents", "Ideas")
+	newPath := filepath.Join(newDir, "ideas.md")
+	oldPath := filepath.Join(home, ".ideas.md")
+
+	// Migrate from old location if it exists.
+	if _, err := os.Stat(oldPath); err == nil {
+		if _, err := os.Stat(newPath); err != nil {
+			if err := os.MkdirAll(newDir, 0o755); err != nil {
+				return "", fmt.Errorf("creating Ideas folder: %w", err)
+			}
+			if err := os.Rename(oldPath, newPath); err != nil {
+				return "", fmt.Errorf("migrating ideas from %s: %w", oldPath, err)
+			}
+			fmt.Fprintf(os.Stderr, "idea: moved ideas to %s\n", newPath)
+		} else {
+			// Both exist — keep the old one as-is, user can sort it out.
+			return oldPath, nil
+		}
+		return newPath, nil
+	}
+
+	if err := os.MkdirAll(newDir, 0o755); err != nil {
+		return "", fmt.Errorf("creating Ideas folder: %w", err)
+	}
+	return newPath, nil
 }
 
 // load reads the ideas file and returns the idea texts in order.

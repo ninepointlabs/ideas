@@ -29,7 +29,7 @@ spec is invalid or out of range, nothing is removed.
 
 ## Storage
 
-Ideas live in `~/.ideas.md`. Override with `$IDEAS_FILE`:
+Ideas live in `~/Documents/Ideas/ideas.md`. Override with `$IDEAS_FILE`:
 
 ```sh
 IDEAS_FILE=~/notes/work-ideas.md idea "Ship it"
