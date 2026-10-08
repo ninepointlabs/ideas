@@ -1,2 +1,3 @@
 /ideas
-*.md.bak/dist
+*.md.bak
+/dist
