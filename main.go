@@ -73,6 +73,7 @@ func run(args []string) error {
 
 // ideasPath returns $IDEAS_FILE if set, otherwise ~/Documents/Ideas/ideas.md.
 // If the old location (~/.ideas.md) exists, it is moved to the new default.
+// If the new file already exists (reinstall, Syncthing), it is used as-is.
 func ideasPath() (string, error) {
 	if p := os.Getenv("IDEAS_FILE"); p != "" {
 		return p, nil
@@ -85,23 +86,24 @@ func ideasPath() (string, error) {
 	newPath := filepath.Join(newDir, "ideas.md")
 	oldPath := filepath.Join(home, ".ideas.md")
 
-	// Migrate from old location if it exists.
-	if _, err := os.Stat(oldPath); err == nil {
-		if _, err := os.Stat(newPath); err != nil {
-			if err := os.MkdirAll(newDir, 0o755); err != nil {
-				return "", fmt.Errorf("creating Ideas folder: %w", err)
-			}
-			if err := os.Rename(oldPath, newPath); err != nil {
-				return "", fmt.Errorf("migrating ideas from %s: %w", oldPath, err)
-			}
-			fmt.Fprintf(os.Stderr, "idea: moved ideas to %s\n", newPath)
-		} else {
-			// Both exist — keep the old one as-is, user can sort it out.
-			return oldPath, nil
-		}
+	// New file already exists — reinstall or Syncthing, use it directly.
+	if _, err := os.Stat(newPath); err == nil {
 		return newPath, nil
 	}
 
+	// Migrate from old location if it exists.
+	if _, err := os.Stat(oldPath); err == nil {
+		if err := os.MkdirAll(newDir, 0o755); err != nil {
+			return "", fmt.Errorf("creating Ideas folder: %w", err)
+		}
+		if err := os.Rename(oldPath, newPath); err != nil {
+			return "", fmt.Errorf("migrating ideas from %s: %w", oldPath, err)
+		}
+		fmt.Fprintf(os.Stderr, "idea: moved ideas to %s\n", newPath)
+		return newPath, nil
+	}
+
+	// Nothing exists yet — create the directory for the first run.
 	if err := os.MkdirAll(newDir, 0o755); err != nil {
 		return "", fmt.Errorf("creating Ideas folder: %w", err)
 	}
