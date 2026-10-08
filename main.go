@@ -1,4 +1,4 @@
-// Command ideas is a tiny CLI for capturing numbered ideas in a markdown file.
+// Command idea is a tiny CLI for capturing numbered ideas in a markdown file.
 package main
 
 import (
@@ -18,10 +18,10 @@ import (
 const header = "# Ideas"
 
 const usage = `Usage:
-  ideas "some text"     Append an idea
-  ideas -l              List ideas
-  ideas -r <spec>       Remove ideas by number (e.g. 1, 1-3, 1,5,6, 1-3,5,7-9)
-  ideas -h              Show this help
+  idea "some text"      Append an idea
+  idea -l               List ideas
+  idea -r <spec>        Remove ideas by number (e.g. 1, 1-3, 1,5,6, 1-3,5,7-9)
+  idea -h               Show this help
 
 Ideas are stored in ~/.ideas.md (override with $IDEAS_FILE).
 `
@@ -30,7 +30,7 @@ var itemRe = regexp.MustCompile(`^(\d+)\.\s?(.*)$`)
 
 func main() {
 	if err := run(os.Args[1:]); err != nil {
-		fmt.Fprintln(os.Stderr, "ideas:", err)
+		fmt.Fprintln(os.Stderr, "idea:", err)
 		os.Exit(1)
 	}
 }

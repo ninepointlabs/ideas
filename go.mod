@@ -1,3 +1,3 @@
-module github.com/ninepointlabs/ideas
+module github.com/ninepointlabs/idea
 
 go 1.22
