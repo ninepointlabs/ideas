@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Build .deb, .rpm and Arch packages for idea into dist/.
-# Usage: packaging/build-packages.sh [version]   (default 0.1.0)
+# Usage: packaging/build-packages.sh [version]   (default 0.1.1)
 # Packaging tools run inside a debian:trixie container; only go and docker are needed locally.
 set -euo pipefail
 
-VERSION="${1:-0.1.0}"
+VERSION="${1:-0.1.1}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="$ROOT/dist"
 MAINTAINER="Nine Point Labs"

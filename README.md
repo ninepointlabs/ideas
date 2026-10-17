@@ -4,6 +4,17 @@ A tiny CLI for jotting down numbered ideas in a markdown file. Go stdlib only.
 
 ## Install
 
+With [autonomix-cli](https://github.com/ninepointlabs/autonomix-cli):
+
+```sh
+autonomix-cli add https://github.com/ninepointlabs/ideas
+```
+
+Or download the `.deb`, `.rpm` or Arch package from the
+[latest release](https://github.com/ninepointlabs/ideas/releases/latest).
+
+From source:
+
 ```sh
 make build              # builds ./idea
 sudo make install       # installs to /usr/local/bin/idea
