@@ -7,7 +7,7 @@ set -euo pipefail
 VERSION="${1:-0.1.0}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="$ROOT/dist"
-MAINTAINER="Ninepoint Labs"
+MAINTAINER="Nine Point Labs"
 DESCRIPTION="Terminal app for capturing and managing numbered ideas in markdown"
 URL="https://github.com/ninepointlabs/ideas"
 
