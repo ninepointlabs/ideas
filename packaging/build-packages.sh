@@ -15,7 +15,7 @@ rm -rf "$DIST"
 mkdir -p "$DIST/pkg/deb/DEBIAN" "$DIST/pkg/deb/usr/local/bin"
 
 cd "$ROOT"
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o "$DIST/idea" .
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=$VERSION" -o "$DIST/idea" .
 [ -x "$DIST/idea" ] || { echo "binary missing or not executable" >&2; exit 1; }
 
 install -m755 "$DIST/idea" "$DIST/pkg/deb/usr/local/bin/idea"
